@@ -10,4 +10,4 @@ Or in mainnet: iamknownasfesal.sui
 
 ## Transaction
 
-Can find transaction in suiexplorer: [Go to TX](https://suiexplorer.com/txblock/GezjhkajkD9tsWQxuM96pGDYeSnucG4XJDFGiLi8C12J?network=devnet)
+Can find transaction in suiexplorer: [Go to TX](https://suiexplorer.com/txblock/GDUjKiUYpGDTNXbecUHMTxe9QLatuHpBTo8GLcjD3QxX?network=testnet)

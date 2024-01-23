@@ -6,10 +6,10 @@ import wallet from "./wba-wallet.json"
 import { fromHEX } from "@mysten/bcs";
 
 const keypair = Ed25519Keypair.fromSecretKey(fromHEX(wallet.privateKey));
-const client = new SuiClient({ url: getFullnodeUrl("devnet") });
+const client = new SuiClient({ url: getFullnodeUrl("testnet") });
 
-const enrollment_object_id = "0x326054a2db6192fcd3085cfde6e92d1a917f3df953f5327f7d4e3c1457e8816e";
-const cohort = "0x0311787fbd06d5e50927173103f3edd59a864c7b97ed5cda6fe02ed4e2b2e6aa";
+const enrollment_object_id = "0x5927f2574f0a5e2afa574e24bca462269d31cf29bdd2215d908b90b691ea5747";
+const cohort = "0xa85910892fca1bedde91ec6a1379bcf71f4106adbe390ccd67fb696c802d99ab";
 
 const txb = new TransactionBlock();
 const github = new Uint8Array(Buffer.from("iamknownasfesal"));
@@ -22,5 +22,5 @@ txb.moveCall({
 
 (async () => {
     let txid = await client.signAndExecuteTransactionBlock({ signer: keypair, transactionBlock: txb });
-    console.log(`Success! Check our your TX here: https://suiexplorer.com/txblock/${txid.digest}?network=devnet`);
+    console.log(`Success! Check our your TX here: https://suiexplorer.com/txblock/${txid.digest}?network=testnet`);
 })();

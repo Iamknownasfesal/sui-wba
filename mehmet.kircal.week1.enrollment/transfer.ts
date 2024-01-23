@@ -8,7 +8,7 @@ const keypair = Ed25519Keypair.fromSecretKey(new Uint8Array(wallet));
 
 // Define our WBA SUI Address
 const to = "0xa5b1611d756c1b2723df1b97782cacfd10c8f94df571935db87b7f54ef653d66";
-const client = new SuiClient({ url: getFullnodeUrl("devnet") });
+const client = new SuiClient({ url: getFullnodeUrl("testnet") });
 
 (async () => {
     try {
@@ -20,7 +20,7 @@ const client = new SuiClient({ url: getFullnodeUrl("devnet") });
         txb.transferObjects([coin, txb.gas], to);
         let txid = await client.signAndExecuteTransactionBlock({ signer: keypair, transactionBlock: txb });
         console.log(`Success! Check our your TX here:
-        https://suiexplorer.com/txblock/${txid.digest}?network=devnet`);
+        https://suiexplorer.com/txblock/${txid.digest}?network=testnet`);
     } catch (e) {
         console.error(`Oops, something went wrong: ${e}`)
     }
@@ -34,7 +34,7 @@ const client = new SuiClient({ url: getFullnodeUrl("devnet") });
         txb.transferObjects([txb.gas], to);
         let txid = await client.signAndExecuteTransactionBlock({ signer: keypair, transactionBlock: txb });
         console.log(`Success! Check our your TX here:
-        https://suiexplorer.com/txblock/${txid.digest}?network=devnet`);
+        https://suiexplorer.com/txblock/${txid.digest}?network=testnet`);
     } catch (e) {
         console.error(`Oops, something went wrong: ${e}`)
     }
