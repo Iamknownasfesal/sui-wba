@@ -57,10 +57,6 @@ module bank::bank {
         coin::from_balance(fee_balance, ctx)
     }
 
-    public fun claim(_: &OwnerCap, self: &mut Bank, ctx: &mut TxContext): Coin<SUI> {
-        coin::from_balance(dynamic_field::remove(&mut self.id, AdminBalance {}), ctx)
-    }
-
     public fun balance(self: &mut Bank, user: address): u64 {
         if (dynamic_field::exists_(&self.id, UserBalance { user: user })) {
             balance::value(dynamic_field::borrow_mut<UserBalance, Balance<SUI>>(&mut self.id, UserBalance { user: user }))
