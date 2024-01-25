@@ -48,12 +48,13 @@ module bank::bank {
         };
     }
 
-    public fun withdraw(self: &mut Bank, ctx: &mut TxContext): Coin<SUI> {
-        if (dynamic_field::exists_(&self.id, UserBalance { user: tx_context::sender(ctx) })) {
-            coin::from_balance(dynamic_field::remove(&mut self.id, UserBalance { user: tx_context::sender(ctx) }), ctx)
-        } else {
-            coin::zero(ctx)
-        }
+    public fun claim(_: &OwnerCap, self: &mut Bank, ctx: &mut TxContext): Coin<SUI> {
+        let fee_balance = balance::withdraw_all(
+            df::borrow_mut<AdminBalance, Balance<SUI>>(
+                &mut self.id,
+                AdminBalance { },
+            ));
+        coin::from_balance(fee_balance, ctx)
     }
 
     public fun claim(_: &OwnerCap, self: &mut Bank, ctx: &mut TxContext): Coin<SUI> {
