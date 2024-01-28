@@ -20,6 +20,8 @@ module bank::bank {
 
     const FEE: u128 = 5;
 
+    const ENotEnoughBalance: u64 = 0;
+
     fun init(ctx: &mut TxContext) {
         let bank = Bank { id: object::new(ctx) };
 
@@ -30,6 +32,24 @@ module bank::bank {
         );
 
         transfer::transfer(OwnerCap { id: object::new(ctx) }, tx_context::sender(ctx));
+    }
+
+      public fun withdraw(self: &mut Bank, ctx: &mut TxContext): Coin<SUI> {
+        let sender = tx_context::sender(ctx);
+
+        if (dynamic_field::exists_(&self.id, UserBalance { user: sender })) {
+            coin::from_balance(dynamic_field::remove(&mut self.id, UserBalance { user: sender }), ctx)
+        } else {
+            coin::zero(ctx)
+        }
+    }
+
+    public fun partial_withdraw(self: &mut Bank, value: u64, ctx: &mut TxContext): Coin<SUI> {
+        let balance_mut = dynamic_field::borrow_mut<UserBalance, Balance<SUI>>(&mut self.id, UserBalance { user: tx_context::sender(ctx) });
+
+        assert!(balance::value(balance_mut) >= value, ENotEnoughBalance);
+
+        coin::take(balance_mut, value, ctx)
     }
 
     public fun deposit(self: &mut Bank, token: Coin<SUI>, ctx: &mut TxContext) {
@@ -48,9 +68,22 @@ module bank::bank {
         };
     }
 
+    public fun user_balance(self: &Bank, user: address): u64 {
+        let key = UserBalance { user };
+        if (dynamic_field::exists_(&self.id, key)) {
+            balance::value(dynamic_field::borrow<UserBalance, Balance<SUI>>(&self.id, key))
+        } else {
+            0
+        }
+    }
+
+    public fun admin_balance(self: &Bank): u64 {
+        balance::value(dynamic_field::borrow<AdminBalance, Balance<SUI>>(&self.id, AdminBalance {}))
+    }  
+
     public fun claim(_: &OwnerCap, self: &mut Bank, ctx: &mut TxContext): Coin<SUI> {
         let fee_balance = balance::withdraw_all(
-            df::borrow_mut<AdminBalance, Balance<SUI>>(
+            dynamic_field::borrow_mut<AdminBalance, Balance<SUI>>(
                 &mut self.id,
                 AdminBalance { },
             ));
@@ -63,5 +96,10 @@ module bank::bank {
         } else {
             0
         }
+    }
+
+    #[test_only]
+    public fun init_for_testing(ctx: &mut TxContext) {
+        init(ctx);
     }
 }
